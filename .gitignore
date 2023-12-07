@@ -1,0 +1,4 @@
+# ignore the advent of code input data
+input
+# ignore build files
+*.o
