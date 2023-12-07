@@ -1,22 +1,36 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 /*
 Optimizations:
-basic getchar() stdin: 0m2.254s
-mmap: 0m0.329s
-
+# stdin getchar() implementation
+total: 112084000
+user	0m2.250s
+# stdin getchar() O3 implementation
+total: 112084000
+user	0m2.123s
+# mmap implementation
+total: 112084000
+user	0m0.339s
+# mmap O3 implementation
+total: 112084000
+user	0m0.175s
 */
 
 
-int main(int argc, char* args[]) {
+int main(int argc, char *argv[]) {
 	// load file
-	int fd = open(args[1], O_RDONLY);
+	if(argc != 2) { exit(0); }
+	int fd = open(argv[1], O_RDONLY);
+	if(fd == -1) { exit(1); }
 	struct stat st;
 	fstat(fd, &st);
 	char *fptr = mmap(NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+	if (fptr == MAP_FAILED) { exit(2); }
 	
 	short f = 0;
 	short l = 0;
