@@ -7,20 +7,28 @@ let lines: [[Int]] = data.split(separator: "\n").map { (str) -> [Int] in
 	}
 }
 
-var safeCount = 0
-for line in lines {
-	var safe = true
-	var last = line.first!
-	let isIncreasing = last - line[1] > 0
-	for i in line[1...line.count-1] {
-		let incDec = i - last > 0
-		let diff = abs(i - last)
-		if diff < 1 || diff > 3 || incDec == isIncreasing {
-			safe = false
+/// Returns true if it's unsafe
+func check(_ a: Int, _ b: Int, _ isIncreasing: Bool) -> Bool {
+	let diff = abs(a - b)
+	return diff < 1 || diff > 3 || (a - b > 0) == isIncreasing
+}
+
+/// Returns true if it's unsafe
+func isSafe(_ arr: [Int]) -> Bool {
+	var last = arr.first!
+	let isIncreasing = last - arr[1] > 0
+	for i in arr[1...arr.count-1] {
+		if check(i, last, isIncreasing) {
+			return false
 		}
 		last = i
 	}
-	if safe {
+	return true
+}
+
+var safeCount = 0
+for line in lines {
+	if isSafe(line) {
 		safeCount += 1
 	}
 }
