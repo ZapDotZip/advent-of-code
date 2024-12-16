@@ -33,10 +33,11 @@ while !contiguousFreeSpace(blocks) {
 		return blocks.count
 	}()
 	let lastBlock = {
-		for (index, i) in blocks.enumerated().reversed() {
-			if i != -1 {
-				blocks[index] = -1
-				return i
+		for i in stride(from: blocks.endIndex - 1, to: 0, by: -1) {
+			if blocks[i] != -1 {
+				let res = blocks[i]
+				blocks[i] = -1
+				return res
 			}
 		}
 		return -1
