@@ -1,30 +1,30 @@
 import Foundation
 var input = (try! String(contentsOfFile: CommandLine.arguments[1])).split(separator: "\n").first!
-var blocks = [String]()
+var blocks = [Int]()
 var freeSpace = false
 var inode = 0
 for char in input {
 	if freeSpace {
-		blocks.append(contentsOf: [String].init(repeating: ".", count: Int(String(char))!))
+		blocks.append(contentsOf: [Int].init(repeating: -1, count: Int(String(char))!))
 	} else {
-		blocks.append(contentsOf: [String].init(repeating: String(inode), count: Int(String(char))!))
+		blocks.append(contentsOf: [Int].init(repeating: inode, count: Int(String(char))!))
 		inode += 1
 	}
 	freeSpace = !freeSpace
 }
 
-func findContiguousSize(item: String, startPos: Int) -> Int {
+func findContiguousSize(item: Int, startPos: Int) -> Int {
 	for i in stride(from: startPos, to: 0, by: -1) {
 		if blocks[i] != item { return startPos - i }
 	}
 	return -1
 }
 
-func findEnoughFreeSpace(size: Int, item: String, upTo: Int) -> Bool {
+func findEnoughFreeSpace(size: Int, item: Int, upTo: Int) -> Bool {
 	var freeSpace = 0
 	var freeSpaceStart = -1
 	for (index, i) in blocks.enumerated().prefix(upTo) {
-		if i == "." {
+		if i == -1 {
 			freeSpace += 1
 			if freeSpaceStart == -1 {
 				freeSpaceStart = index
@@ -52,7 +52,7 @@ while index > 0 {
 	}
 	if findEnoughFreeSpace(size: srcBlockLen, item: blocks[index], upTo: index) {
 		for j in stride(from: index, to: index-srcBlockLen, by: -1) {
-			blocks[j] = "."
+			blocks[j] = -1
 		}
 	}
 	index -= srcBlockLen
@@ -60,10 +60,8 @@ while index > 0 {
 
 var result = 0
 for (index, i) in blocks.enumerated() {
-	if let id = Int(i) {
-		result += index * id
-	} else {
-		continue
+	if i != -1 {
+		result += index * i
 	}
 }
 // print(blocks.reduce(into: "") { $0 = "\($0)\($1)" })
