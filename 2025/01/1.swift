@@ -10,7 +10,7 @@ for var line in input.split(separator: "\n") {
 	if direction == "L" {
 		dial = dial - amt
 		while dial < 0 {
-			dial = 100 - abs(dial)
+			dial = 100 - -dial
 		}
 	} else {
 		dial = dial + amt
